@@ -7,7 +7,7 @@ const io = require('socket.io')(http, {
 const RoomManager = require('./room');
 RoomManager.setIO(io);
 
-app.use(express.static('client/build'))
+app.use(express.static('./static'))
 const port = process.env.PORT || 3000
 
 

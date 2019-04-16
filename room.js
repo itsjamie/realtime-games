@@ -13,6 +13,14 @@ class RoomManager {
     onConnect(socket) {
         socket.on('room', (roomName) => {
             this.joinRoom(socket, roomName)
+
+            socket.on('disconnect', () => {
+                console.log("Disconnect socket from room");
+                this.rooms[roomName].removePlayer(socket)
+                if (this.rooms[roomName].players.length === 0) {
+                    delete this.rooms[roomName]
+                }
+            })
         })
     }
 
@@ -53,6 +61,16 @@ class Room {
 
         socket.emit('setupInfo', JSON.stringify(this.setup, null, 4))
         this.io.to(this.setup.name).emit('playerCount', this.players.length);        
+    }
+
+    removePlayer(socket) {
+        const idx = this.players.findIndex((s) => {
+            console.log(s.id)
+            return (socket.id === s.id)
+        })
+        
+        this.players.splice(idx, 1);
+        this.io.to(this.setup.name).emit('playerCount', this.players.length);
     }
 
     listenAdmin(socket) {

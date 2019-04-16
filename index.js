@@ -16,5 +16,6 @@ http.listen(port, () => {
 })
 
 io.on('connect', (socket) => {
+    console.log("Connected");
     RoomManager.onConnect(socket)
 });

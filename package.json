@@ -5,12 +5,16 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "heroku-postbuild": "mkdir static && cd client && npm install && npm run build && cd -",
+    "heroku-postbuild": "mkdir static && cd client && npm install && npm run build",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
+  "cacheDirectories": [
+    "node_modules",
+    "client/node_modules"
+  ],
   "dependencies": {
     "express": "^4.16.4",
     "fisher-yates-shuffle": "^0.2.0",

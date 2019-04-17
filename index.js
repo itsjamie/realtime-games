@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io')(http, {
@@ -8,10 +9,13 @@ const { SocketState } = require('./socket-state')
 const RoomManager = require('./room');
 RoomManager.setIO(io);
 
-app.use(express.static('./static'))
+app.use(express.static(path.resolve(__dirname, 'static')))
+
+app.get("*", function(request, response) {
+    response.sendFile(path.resolve(__dirname, 'static', 'index.html'));
+})
+
 const port = process.env.PORT || 3000
-
-
 http.listen(port, () => {
     console.log(`example app listening at *:${port}`)
 })

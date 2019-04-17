@@ -1,5 +1,6 @@
 const shuffle = require('fisher-yates-shuffle')
 const generateNumber = require('random-number-csprng');
+const { SocketState } = require('./socket-state');
 
 class RoomManager {
     constructor() {
@@ -13,6 +14,8 @@ class RoomManager {
     onConnect(socket) {
         socket.on('room', (roomName) => {
             this.joinRoom(socket, roomName)
+            const state = SocketState.get(socket.id)
+            console.log(state);
 
             socket.on('disconnect', () => {
                 console.log("Disconnect socket from room");

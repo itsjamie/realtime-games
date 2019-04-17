@@ -4,6 +4,7 @@ import './App.css';
 import io from 'socket.io-client';
 import { Room } from './components/room';
 import { Controls } from './components/controls';
+import { Name } from './components/name';
 
 const socket = io();
 
@@ -11,6 +12,7 @@ class App extends Component {
   constructor() {
     super()
     this.state = {
+      name: window.localStorage.getItem('name') || '',
       room: '',
       admin: false,
       connected: false,
@@ -65,6 +67,13 @@ class App extends Component {
     })
   }
 
+  setName = (name) => {
+    socket.emit('setName', name)
+    this.setState({
+      name,
+    })
+  }
+
   addCharacter(e) {
     e.preventDefault()
     socket.emit('addCharacter', e.target.name.value)
@@ -78,13 +87,14 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
-      <Room {...this.state}></Room>
-      <Controls 
-        {...this.state}
-        addCharacter={this.addCharacter}
-        joinRoom={this.joinRoom}
-        startGame={this.startGame}>
-      </Controls>
+        <Name name={this.state.name} onNameSet={this.setName} />
+        <Room {...this.state}></Room>
+        <Controls 
+          {...this.state}
+          addCharacter={this.addCharacter}
+          joinRoom={this.joinRoom}
+          startGame={this.startGame}>
+        </Controls>
       </React.Fragment>
     );
   }

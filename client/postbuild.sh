@@ -7,7 +7,7 @@
 
 echo 'Clearing out previous build'
 cd ../static
-rm -rf ./*
+rm -r ./*
 
 echo 'Moving latest built into static folder'
 cd ../client/

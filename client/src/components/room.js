@@ -1,7 +1,6 @@
 import React from 'react'
 
 const Room = (props) => {
-    console.log(props);
     return (
         <React.Fragment>
             <div>Admin: {props.admin.toString()}</div>
@@ -10,7 +9,7 @@ const Room = (props) => {
             <div>Connected: {props.connected.toString()}</div>
             <div>Players: {props.playerCount}</div>
             <div>Character: {props.character}</div>
-            <div>Setup Info: <pre>{props.setupInfo}</pre></div>
+            <div>Setup Info: <pre>{JSON.stringify(props.setupInfo, null, 4)}</pre></div>
         </React.Fragment>
     )
 }

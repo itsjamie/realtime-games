@@ -4,6 +4,7 @@ import './App.css';
 import io from 'socket.io-client';
 import { Room } from './components/room';
 import { Controls } from './components/controls';
+import { GameControls } from './components/game-controls';
 import { Name } from './components/name';
 
 const socket = io();
@@ -14,18 +15,25 @@ class App extends Component {
     this.state = {
       name: window.localStorage.getItem('name') || '',
       room: '',
+      game: 'freeform',
       admin: false,
       connected: false,
       playing: false,
       character: '',
       playerCount: 0,
-      setupInfo: '',
+      setupInfo: {},
+      gameInfo: [],
     }
 
     socket.on('connect', () => {
       this.setState({
         connected: true,
       })
+
+      // If the name was set in local storage
+      if (this.state.name) {
+        socket.emit('setName', this.state.name)
+      }
     })
     socket.on('disconnect', () => {
       this.setState({
@@ -53,8 +61,15 @@ class App extends Component {
       })
     })
     socket.on('setupInfo', (setupInfo) => {
+      const setup = JSON.parse(setupInfo)
       this.setState({
-        setupInfo,
+        game: setup.game,
+        setupInfo: setup,
+      })
+    })
+    socket.on('gameInfo', (gameInfo) => {
+      this.setState({
+        gameInfo: JSON.parse(gameInfo),
       })
     })
   }
@@ -73,10 +88,19 @@ class App extends Component {
       name,
     })
   }
+  
+  selectPreset(e) {
+    e.preventDefault()
+    socket.emit('setGame', e.target.value)
+  }
 
-  addCharacter(e) {
+  addCharacterWithForm(e) {
     e.preventDefault()
     socket.emit('addCharacter', e.target.name.value)
+  }
+
+  addCharacterWithName(name) {
+    socket.emit('addCharacter', name)
   }
 
   startGame(e) {
@@ -91,10 +115,15 @@ class App extends Component {
         <Room {...this.state}></Room>
         <Controls 
           {...this.state}
-          addCharacter={this.addCharacter}
+          addCharacter={this.addCharacterWithForm}
           joinRoom={this.joinRoom}
+          selectPreset={this.selectPreset}
           startGame={this.startGame}>
         </Controls>
+        <GameControls 
+          admin={this.state.admin}
+          game={this.state.setupInfo.game}
+          addCharacter={this.addCharacterWithName} />
       </React.Fragment>
     );
   }

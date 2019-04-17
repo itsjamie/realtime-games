@@ -1,4 +1,4 @@
-const SocketState = new WeakMap()
+const SocketState = new Map()
 
 module.exports = {
     SocketState,

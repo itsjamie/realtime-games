@@ -117,62 +117,36 @@ class Room {
     }
 }
 
-const AvalonGameInfo = (players, deck, num) => {
-    const Merlin = deck.findIndex(card => card == "Merlin")
-    const Morgana = deck.findIndex(card => card == "Morgana")
-    const Assassin = deck.findIndex(card => card == "Assassin")
-    const Mordred = deck.findIndex(card => card == "Mordred")
-    const Oberon = deck.findIndex(card => card == "Oberon")
- 
-    const MerlinRoles = []
-    const MorganaRoles = []
-    const PercivalRoles = []
-    const AssassinRoles = []
-    const MordredRoles = []
+const AvalonGamePlayerInfo = [
+   { name: "Merlin", knows: ["Morgana", "Oberon", "Assassin"]},
+   { name: "Loyal", knows: []},
+   { name: "Percival", knows: ["Merlin", "Morgana"]},
+   { name: "Morgana", knows: ["Mordred", "Assassin"]},
+   { name: "Assassin", knows: ["Mordred", "Morgana"]},
+   { name: "Mordred", knows: ["Morgana", "Assassin"]},
+   { name: "Oberon", knows: []}
+];
 
-    if (Merlin !== -1) {
-        PercivalRoles.push(SocketState.get(players[Merlin].id).name)
-    }
-    if (Morgana !== -1) {
-        MerlinRoles.push(SocketState.get(players[Morgana].id).name)
-        PercivalRoles.push(SocketState.get(players[Morgana].id).name)
-        AssassinRoles.push(SocketState.get(players[Morgana].id).name)
-        MordredRoles.push(SocketState.get(players[Morgana].id).name)
-    }
-    if (Assassin !== -1) {
-        MerlinRoles.push(SocketState.get(players[Assassin].id).name)
-        MorganaRoles.push(SocketState.get(players[Assassin].id).name)
-        MordredRoles.push(SocketState.get(players[Assassin].id).name)
-    }
-    if (Oberon !== -1) {
-        MerlinRoles.push(SocketState.get(players[Oberon].id).name)
-    }
-    if (Mordred !== -1) {
-        AssassinRoles.push(SocketState.get(players[Mordred].id).name)
-        MorganaRoles.push(SocketState.get(players[Mordred].id).name)
-    }
-
-    for (let i = 0; i < deck.length; i++) {
-        let data;
-        switch (deck[i]) {
-            case "Merlin":
-                data = MerlinRoles;    
-                break;
-            case "Morgana":
-                data = MorganaRoles
-                break;
-            case "Percival":
-                data = PercivalRoles
-                break;
-            case "Assassin":
-                data = AssassinRoles
-                break;
-            case "Mordred":
-                data = MordredRoles
-                break;
+const getKnownAvalonPlayers = (knownList, players, deck) => {
+    return knownList.reduce((knownNames, name) => {
+        const index = deck.findIndex(card => card == name);
+        if (index !== -1 && SocketState.get(players[index].id)) {
+            knownNames.push(SocketState.get(players[index].id).name);
         }
-        const shuffledRoles = shuffle(data, () => num / 1000)
-        players[i].emit('gameInfo', JSON.stringify(shuffledRoles))
+        return knownNames;
+    }, []);
+}
+
+const AvalonGameInfo = (players, deck, num) => {
+    for (let i = 0; i < AvalonGamePlayerInfo.length; i++) {
+        const playerData = AvalonGamePlayerInfo[i];
+        const playerIndex = deck.findIndex(card => card == playerData.name);
+        if (playerIndex !== -1) {
+            data = getKnownAvalonPlayers(playerData.knows, players, deck);
+
+            const shuffledRoles = shuffle(data, () => num / 1000)
+            players[playerIndex].emit('gameInfo', JSON.stringify(shuffledRoles))
+        }
     }
 }
 

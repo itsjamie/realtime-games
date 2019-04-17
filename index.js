@@ -9,10 +9,10 @@ const { SocketState } = require('./socket-state')
 const RoomManager = require('./room');
 RoomManager.setIO(io);
 
-app.use(express.static(path.resolve(__dirname, 'static')))
+app.use(express.static(path.resolve('.', 'static')))
 
 app.get("*", function(request, response) {
-    response.sendFile(path.resolve(__dirname, 'static', 'index.html'));
+    response.sendFile(path.resolve('.', 'static', 'index.html'));
 })
 
 const port = process.env.PORT || 3000

@@ -1,129 +1,132 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import io from 'socket.io-client';
-import { Room } from './components/room';
-import { Controls } from './components/controls';
-import { GameControls } from './components/game-controls';
-import { Name } from './components/name';
+import React, { Component } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import io from "socket.io-client";
+import Room from "./components/room";
+import Controls from "./components/controls";
+import TopBar from "./components/TopBar";
+import { GameControls } from "./components/game-controls";
+import Name from "./components/name";
 
 const socket = io();
 
 class App extends Component {
   constructor() {
-    super()
+    super();
     this.state = {
-      name: window.localStorage.getItem('name') || '',
-      room: '',
-      game: 'freeform',
+      name: window.localStorage.getItem("name") || "",
+      room: "",
+      game: "freeform",
       admin: false,
       connected: false,
       playing: false,
-      character: '',
+      character: "",
       playerCount: 0,
       setupInfo: {},
-      gameInfo: [],
-    }
+      gameInfo: []
+    };
 
-    socket.on('connect', () => {
+    socket.on("connect", () => {
       this.setState({
-        connected: true,
-      })
+        connected: true
+      });
 
       // If the name was set in local storage
       if (this.state.name) {
-        socket.emit('setName', this.state.name)
+        socket.emit("setName", this.state.name);
       }
-    })
-    socket.on('disconnect', () => {
+    });
+    socket.on("disconnect", () => {
       this.setState({
-        connected: false,
-      })
-    })
-    socket.on('admin', () => {
+        connected: false
+      });
+    });
+    socket.on("admin", () => {
       this.setState({
-        admin: true,
-      })
-    })
-    socket.on('startGame', () => {
+        admin: true
+      });
+    });
+    socket.on("startGame", () => {
       this.setState({
-        playing: true,
-      })
-    })
-    socket.on('character', (character) => {
+        playing: true
+      });
+    });
+    socket.on("character", character => {
       this.setState({
-        character,
-      })
-    })
-    socket.on('playerCount', (playerCount) => {
+        character
+      });
+    });
+    socket.on("playerCount", playerCount => {
       this.setState({
         playerCount
-      })
-    })
-    socket.on('setupInfo', (setupInfo) => {
-      const setup = JSON.parse(setupInfo)
+      });
+    });
+    socket.on("setupInfo", setupInfo => {
+      const setup = JSON.parse(setupInfo);
       this.setState({
         game: setup.game,
-        setupInfo: setup,
-      })
-    })
-    socket.on('gameInfo', (gameInfo) => {
+        setupInfo: setup
+      });
+    });
+    socket.on("gameInfo", gameInfo => {
       this.setState({
-        gameInfo: JSON.parse(gameInfo),
-      })
-    })
+        gameInfo: JSON.parse(gameInfo)
+      });
+    });
   }
 
-  joinRoom = (e) => {
-    e.preventDefault()
-    socket.emit('room', e.target.room.value)
+  joinRoom = e => {
+    e.preventDefault();
+    socket.emit("room", e.target.room.value);
     this.setState({
-      room: e.target.room.value,
-    })
-  }
+      room: e.target.room.value
+    });
+  };
 
-  setName = (name) => {
-    socket.emit('setName', name)
+  setName = name => {
+    socket.emit("setName", name);
     this.setState({
-      name,
-    })
-  }
-  
+      name
+    });
+  };
+
   selectPreset(e) {
-    e.preventDefault()
-    socket.emit('setGame', e.target.value)
+    e.preventDefault();
+    socket.emit("setGame", e.target.value);
   }
 
   addCharacterWithForm(e) {
-    e.preventDefault()
-    socket.emit('addCharacter', e.target.name.value)
+    e.preventDefault();
+    socket.emit("addCharacter", e.target.name.value);
   }
 
   addCharacterWithName(name) {
-    socket.emit('addCharacter', name)
+    socket.emit("addCharacter", name);
   }
 
   startGame(e) {
-    e.preventDefault()
-    socket.emit('startGame');
+    e.preventDefault();
+    socket.emit("startGame");
   }
 
   render() {
     return (
       <React.Fragment>
+        <TopBar />
         <Name name={this.state.name} onNameSet={this.setName} />
-        <Room {...this.state}></Room>
-        <Controls 
+        <Room {...this.state} />
+        <Controls
           {...this.state}
           addCharacter={this.addCharacterWithForm}
           joinRoom={this.joinRoom}
           selectPreset={this.selectPreset}
-          startGame={this.startGame}>
-        </Controls>
-        <GameControls 
+          startGame={this.startGame}
+        />
+        <GameControls
           admin={this.state.admin}
           game={this.state.setupInfo.game}
-          addCharacter={this.addCharacterWithName} />
+          addCharacter={this.addCharacterWithName}
+        />
       </React.Fragment>
     );
   }

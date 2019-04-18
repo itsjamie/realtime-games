@@ -7,6 +7,7 @@ import Controls from "./components/controls";
 import TopBar from "./components/TopBar";
 import { GameControls } from "./components/game-controls";
 import Name from "./components/name";
+import Baby from "./components/baby";
 
 const socket = io();
 
@@ -127,6 +128,7 @@ class App extends Component {
           game={this.state.setupInfo.game}
           addCharacter={this.addCharacterWithName}
         />
+        <Baby />
       </React.Fragment>
     );
   }

@@ -1,7 +1,6 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-import MenuItem from "@material-ui/core/MenuItem";
-import TextField from "@material-ui/core/TextField";
+import { MenuItem, TextField, Button } from "@material-ui/core/";
 import classNames from "classnames";
 
 const styles = theme => ({
@@ -19,6 +18,9 @@ const styles = theme => ({
   },
   menu: {
     width: 200
+  },
+  margin: {
+    margin: theme.spacing.unit
   }
 });
 
@@ -53,16 +55,33 @@ const Controls = props => {
     return <div>Waiting for game to start...</div>;
   }
 
+  const { addCharacter, selectPreset, startGame } = props;
+
   return (
     <React.Fragment>
-      <form onSubmit={props.addCharacter}>
+      <form onSubmit={addCharacter}>
         <input name="name" type="text" placeholder="Character..." />
       </form>
-      <button onClick={props.selectPreset} value="Avalon">
+      <Button
+        variant="outlined"
+        size="small"
+        color="primary"
+        className={classes.margin}
+        onClick={selectPreset}
+        value="Avalon"
+      >
         Avalon
-      </button>
-      <form onSubmit={props.startGame}>
-        <input type="submit" value="Start Game" />
+      </Button>
+      <form onSubmit={startGame}>
+        <Button
+          size="small"
+          color="primary"
+          className={classes.margin}
+          type="submit"
+          value="Start Game"
+        >
+          Start Game
+        </Button>
       </form>
     </React.Fragment>
   );

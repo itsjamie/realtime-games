@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { MenuItem, TextField, Button } from "@material-ui/core/";
 import classNames from "classnames";
-
+import Input from "@material-ui/core/Input";
+import Typography from "@material-ui/core/Typography";
 const styles = theme => ({
   container: {
     display: "flex",
@@ -26,6 +27,7 @@ const styles = theme => ({
 
 const Controls = props => {
   const { classes } = props;
+  const [room, setRoom] = useState(null);
   if (props.playing) {
     const listGameInfo = props.gameInfo.map(item => <li>{item}</li>);
     return (
@@ -39,20 +41,33 @@ const Controls = props => {
 
   if (!props.room) {
     return (
-      <form onSubmit={props.joinRoom}>
-        <TextField
+      <form onSubmit={() => false}>
+        <Input
           id="standard-dense"
-          label="Enter room name:"
+          placeholder="Enter room name:"
           name="room"
           className={classNames(classes.textField, classes.dense)}
           margin="dense"
+          onChange={e => setRoom(e.target.value)}
         />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => props.joinRoom(room)}
+          className={classes.button}
+        >
+          Join Room
+        </Button>
       </form>
     );
   }
 
   if (!props.admin) {
-    return <div>Waiting for game to start...</div>;
+    return (
+      <Typography variant="p" component="p">
+        Waiting for game to start...
+      </Typography>
+    );
   }
 
   const { addCharacter, selectPreset, startGame } = props;

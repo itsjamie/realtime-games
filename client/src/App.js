@@ -76,11 +76,10 @@ class App extends Component {
     });
   }
 
-  joinRoom = e => {
-    e.preventDefault();
-    socket.emit("room", e.target.room.value);
+  joinRoom = roomName => {
+    socket.emit("room", roomName);
     this.setState({
-      room: e.target.room.value
+      room: roomName
     });
   };
 
@@ -113,7 +112,13 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
-        <TopBar />
+        <TopBar
+          {...this.state}
+          addCharacter={this.addCharacterWithForm}
+          joinRoom={this.joinRoom}
+          selectPreset={this.selectPreset}
+          startGame={this.startGame}
+        />
         <Name name={this.state.name} onNameSet={this.setName} />
         <Room {...this.state} />
         <Controls

@@ -92,7 +92,7 @@ class App extends Component {
 
   selectPreset(e) {
     e.preventDefault();
-    socket.emit("setGame", e.target.value);
+    socket.emit("setGame", e.currentTarget.value);
   }
 
   addCharacterWithForm(e) {

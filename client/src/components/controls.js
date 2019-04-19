@@ -4,6 +4,12 @@ import { MenuItem, TextField, Button } from "@material-ui/core/";
 import classNames from "classnames";
 import Input from "@material-ui/core/Input";
 import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+
 const styles = theme => ({
   container: {
     display: "flex",
@@ -22,6 +28,17 @@ const styles = theme => ({
   },
   margin: {
     margin: theme.spacing.unit
+  },
+  gameStart: {
+    padding: "10px",
+    textAlign: "center"
+  },
+  joinRoom: {
+    textAlign: "center",
+    padding: "24px"
+  },
+  button: {
+    marginLeft: "15px"
   }
 });
 
@@ -32,16 +49,18 @@ const Controls = props => {
     const listGameInfo = props.gameInfo.map(item => <li>{item}</li>);
     return (
       <div>
-        <p>Your character is: {props.character}</p>
-        <p>You See:</p>
-        <ul>{listGameInfo}</ul>
+        <Typography className={classes.heading}>You See:</Typography>
+
+        <Typography>
+          <ul>{listGameInfo}</ul>
+        </Typography>
       </div>
     );
   }
 
   if (!props.room) {
     return (
-      <form onSubmit={() => false}>
+      <form className={classes.joinRoom} onSubmit={() => false}>
         <Input
           id="standard-dense"
           placeholder="Enter room name:"
@@ -64,7 +83,7 @@ const Controls = props => {
 
   if (!props.admin) {
     return (
-      <Typography variant="p" component="p">
+      <Typography className={classes.gameStart} variant="p" component="p">
         Waiting for game to start...
       </Typography>
     );

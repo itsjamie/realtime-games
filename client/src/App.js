@@ -24,7 +24,8 @@ class App extends Component {
       character: "",
       playerCount: 0,
       setupInfo: {},
-      gameInfo: []
+      gameInfo: [],
+      showBaby: false
     };
 
     socket.on("connect", () => {
@@ -109,6 +110,10 @@ class App extends Component {
     socket.emit("startGame");
   }
 
+  toggleShowBaby = () => {
+    this.setState({ showBaby: !this.state.showBaby });
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -118,6 +123,8 @@ class App extends Component {
           joinRoom={this.joinRoom}
           selectPreset={this.selectPreset}
           startGame={this.startGame}
+          toggleShowBaby={this.toggleShowBaby}
+          showBaby={this.state.showBaby}
         />
         <Name name={this.state.name} onNameSet={this.setName} />
         <Room {...this.state} />
@@ -133,7 +140,7 @@ class App extends Component {
           game={this.state.setupInfo.game}
           addCharacter={this.addCharacterWithName}
         />
-        <Baby />
+        <Baby showBaby={this.state.showBaby} />
       </React.Fragment>
     );
   }

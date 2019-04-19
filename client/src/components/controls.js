@@ -28,6 +28,17 @@ const styles = theme => ({
   },
   margin: {
     margin: theme.spacing.unit
+  },
+  gameStart: {
+    padding: "10px",
+    textAlign: "center"
+  },
+  joinRoom: {
+    textAlign: "center",
+    padding: "24px"
+  },
+  button: {
+    marginLeft: "15px"
   }
 });
 
@@ -38,24 +49,18 @@ const Controls = props => {
     const listGameInfo = props.gameInfo.map(item => <li>{item}</li>);
     return (
       <div>
-        <p>Your character is: {props.character}</p>
-        <ExpansionPanel>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography className={classes.heading}>You See:</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <Typography>
-              <ul>{listGameInfo}</ul>
-            </Typography>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+        <Typography className={classes.heading}>You See:</Typography>
+
+        <Typography>
+          <ul>{listGameInfo}</ul>
+        </Typography>
       </div>
     );
   }
 
   if (!props.room) {
     return (
-      <form onSubmit={() => false}>
+      <form className={classes.joinRoom} onSubmit={() => false}>
         <Input
           id="standard-dense"
           placeholder="Enter room name:"
@@ -78,11 +83,9 @@ const Controls = props => {
 
   if (!props.admin) {
     return (
-      <Paper className={classes.root} elevation={1}>
-        <Typography variant="p" component="p">
-          Waiting for game to start...
-        </Typography>
-      </Paper>
+      <Typography className={classes.gameStart} variant="p" component="p">
+        Waiting for game to start...
+      </Typography>
     );
   }
 

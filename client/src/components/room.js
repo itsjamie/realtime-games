@@ -22,15 +22,6 @@ const Room = props => {
       {props.room && (
         <List className={classes.root}>
           <ListItem>
-            <Avatar>
-              <i class="material-icons">play_circle_filled</i>
-            </Avatar>
-            <ListItemText
-              primary="Playing"
-              secondary={props.playing.toString()}
-            />
-          </ListItem>
-          <ListItem>
             {props.character === "Merlin" && (
               <ListItemAvatar>
                 <Avatar
@@ -87,13 +78,20 @@ const Room = props => {
                 />
               </ListItemAvatar>
             )}
-            {!props.character && (
-              <Avatar>
-                <i class="material-icons">mood</i>
-              </Avatar>
+            {props.character && (
+              <ListItemText primary="Character" secondary={props.character} />
             )}
-            <ListItemText primary="Character" secondary={props.character} />
           </ListItem>
+
+          {props.admin && (
+            <ListItem>
+              <Avatar>
+                <i class="material-icons">info</i>
+              </Avatar>
+              <ListItemText primary="Setup Info" />
+              {JSON.stringify(props.setupInfo, null, 4)}
+            </ListItem>
+          )}
         </List>
       )}
     </React.Fragment>

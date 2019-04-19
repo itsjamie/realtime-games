@@ -84,16 +84,6 @@ function TopBar(props) {
                 secondary={props.connected.toString()}
               />
             </MenuItem>
-
-            <MenuItem onClick={handleClose}>
-              <Avatar>
-                <i class="material-icons">info</i>
-              </Avatar>
-              <ListItemText
-                primary="Setup Info"
-                secondary={JSON.stringify(props.setupInfo, null, 4)}
-              />
-            </MenuItem>
             <MenuItem onClick={() => handleBabyClick()}>
               {props.showBaby ? "Hide Baby" : "Show Baby"}
             </MenuItem>
@@ -101,7 +91,6 @@ function TopBar(props) {
           <Typography variant="h6" color="inherit" className={classes.grow}>
             Realtime Games
           </Typography>
-
           {props.room && <i class="material-icons">people</i>}
           {props.room && (
             <Typography

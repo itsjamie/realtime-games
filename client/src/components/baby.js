@@ -18,22 +18,12 @@ const styles = theme => ({
 });
 
 const Baby = props => {
-  const [showBaby, setShowBaby] = useState(false);
   const { classes } = props;
 
   return (
     <div className={classes.container}>
-      <Button
-        variant="outlined"
-        size="small"
-        color="primary"
-        className={classes.margin}
-        onClick={() => setShowBaby(!showBaby)}
-      >
-        {showBaby ? "Hide Baby" : "Show Baby"}
-      </Button>
       <div className={classes.babyImgContainer}>
-        {showBaby ? <img src={dancingBaby} alt="Dancing Baby" /> : null}
+        {props.showBaby ? <img src={dancingBaby} alt="Dancing Baby" /> : null}
       </div>
     </div>
   );

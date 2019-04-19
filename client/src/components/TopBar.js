@@ -19,6 +19,10 @@ const styles = {
   grow: {
     flexGrow: 1
   },
+  players: {
+    color: "#fff",
+    marginLeft: "10px"
+  },
   menuButton: {
     marginLeft: -12,
     marginRight: 20,
@@ -35,6 +39,11 @@ function TopBar(props) {
   };
   const handleClose = () => {
     setanchorEl(null);
+  };
+
+  const handleBabyClick = () => {
+    props.toggleShowBaby();
+    handleClose();
   };
 
   return (
@@ -78,18 +87,6 @@ function TopBar(props) {
 
             <MenuItem onClick={handleClose}>
               <Avatar>
-                <i class="material-icons">room</i>
-              </Avatar>
-              <ListItemText primary="Room" secondary={props.room} />
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <Avatar>
-                <i class="material-icons">people</i>
-              </Avatar>
-              <ListItemText primary="Players" secondary={props.playerCount} />
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <Avatar>
                 <i class="material-icons">info</i>
               </Avatar>
               <ListItemText
@@ -97,12 +94,35 @@ function TopBar(props) {
                 secondary={JSON.stringify(props.setupInfo, null, 4)}
               />
             </MenuItem>
+            <MenuItem onClick={() => handleBabyClick()}>
+              {props.showBaby ? "Hide Baby" : "Show Baby"}
+            </MenuItem>
           </Menu>
           <Typography variant="h6" color="inherit" className={classes.grow}>
             Realtime Games
           </Typography>
+
+          {props.room && <i class="material-icons">people</i>}
+          {props.room && (
+            <Typography
+              variant="h6"
+              color="inherit"
+              className={classes.players}
+            >
+              {props.playerCount}
+            </Typography>
+          )}
         </Toolbar>
       </AppBar>
+      {props.room && (
+        <AppBar position="static" color="default">
+          <Toolbar>
+            <Typography variant="h6" color="inherit">
+              Room: {props.room}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      )}
     </div>
   );
 }

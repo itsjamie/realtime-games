@@ -4,6 +4,12 @@ import { MenuItem, TextField, Button } from "@material-ui/core/";
 import classNames from "classnames";
 import Input from "@material-ui/core/Input";
 import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+
 const styles = theme => ({
   container: {
     display: "flex",
@@ -33,8 +39,16 @@ const Controls = props => {
     return (
       <div>
         <p>Your character is: {props.character}</p>
-        <p>You See:</p>
-        <ul>{listGameInfo}</ul>
+        <ExpansionPanel>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography className={classes.heading}>You See:</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Typography>
+              <ul>{listGameInfo}</ul>
+            </Typography>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
       </div>
     );
   }
@@ -64,9 +78,11 @@ const Controls = props => {
 
   if (!props.admin) {
     return (
-      <Typography variant="p" component="p">
-        Waiting for game to start...
-      </Typography>
+      <Paper className={classes.root} elevation={1}>
+        <Typography variant="p" component="p">
+          Waiting for game to start...
+        </Typography>
+      </Paper>
     );
   }
 

@@ -1,14 +1,9 @@
 import React, { useState } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { MenuItem, TextField, Button } from "@material-ui/core/";
+import { Button } from "@material-ui/core/";
 import classNames from "classnames";
 import Input from "@material-ui/core/Input";
 import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const styles = theme => ({
   container: {
@@ -18,7 +13,7 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200
+    width: "80%"
   },
   dense: {
     marginTop: 19
@@ -38,7 +33,8 @@ const styles = theme => ({
     padding: "24px"
   },
   button: {
-    marginLeft: "15px"
+    marginTop: "15px",
+    width: "80%"
   }
 });
 

@@ -6,11 +6,15 @@ import Avatar from "@material-ui/core/Avatar";
 import ImageIcon from "@material-ui/icons/Image";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 
 const styles = theme => ({
   root: {
     width: "100%",
     backgroundColor: theme.palette.background.paper
+  },
+  roles: {
+    textAlign: "center"
   }
 });
 
@@ -24,7 +28,7 @@ const Room = props => {
           <ListItem>
             {props.character === "Merlin" && (
               <ListItemAvatar>
-                <Avatar alt="Remy Sharp" src="/images/merlin.webp" />
+                <Avatar alt="Remy Sharp" src="/images/merlin.png" />
               </ListItemAvatar>
             )}
             {props.character === "Percival" && (
@@ -61,18 +65,23 @@ const Room = props => {
               <ListItemText primary="Character" secondary={props.character} />
             )}
           </ListItem>
-
-          {props.admin && (
-            <ListItem>
-              <Avatar>
-                <i class="material-icons">info</i>
-              </Avatar>
-              <ListItemText primary="Setup Info" />
-              {JSON.stringify(props.setupInfo, null, 4)}
-            </ListItem>
-          )}
         </List>
       )}
+      {props.room &&
+        props.setupInfo &&
+        props.setupInfo.characters &&
+        props.setupInfo.characters.length !== 0 && (
+          <div className={classes.roles}>
+            <Typography variant="h7">Roles In Game:</Typography>
+            <List>
+              {props.setupInfo &&
+                props.setupInfo.characters &&
+                props.setupInfo.characters.map(name => {
+                  return <ListItem>{name}</ListItem>;
+                })}
+            </List>
+          </div>
+        )}
     </React.Fragment>
   );
 };

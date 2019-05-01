@@ -7,10 +7,10 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
+import Fab from "@material-ui/core/Fab";
 
 const styles = {
   root: {
@@ -27,6 +27,12 @@ const styles = {
     marginLeft: -12,
     marginRight: 20,
     color: "#fff"
+  },
+  fab: {
+    marginRight: "10px",
+    width: "40px",
+    height: "40px",
+    boxShadow: "none"
   }
 };
 
@@ -59,6 +65,7 @@ function TopBar(props) {
               <MenuIcon />
             </IconButton>
           </Button>
+
           <Menu
             id="simple-menu"
             anchorEl={anchorEl}
@@ -91,6 +98,7 @@ function TopBar(props) {
           <Typography variant="h6" color="inherit" className={classes.grow}>
             Realtime Games
           </Typography>
+
           {props.room && <i class="material-icons">people</i>}
           {props.room && (
             <Typography
@@ -106,6 +114,15 @@ function TopBar(props) {
       {props.room && (
         <AppBar position="static" color="default">
           <Toolbar>
+            <Fab
+              color="primary"
+              aria-label="Edit"
+              className={classes.fab}
+              onClick={() => window.location.reload(true)}
+            >
+              <i class="material-icons">arrow_back</i>
+            </Fab>
+
             <Typography variant="h6" color="inherit">
               Room: {props.room}
             </Typography>

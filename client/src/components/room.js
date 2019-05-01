@@ -7,6 +7,7 @@ import ImageIcon from "@material-ui/icons/Image";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
 
 const styles = theme => ({
   root: {
@@ -15,11 +16,19 @@ const styles = theme => ({
   },
   roles: {
     textAlign: "center"
+  },
+  text: {
+    padding: "10px",
+    width: "80%",
+    margin: "0 auto",
+    textAlign: "center",
+    marginBottom: "19px"
   }
 });
 
 const Room = props => {
   const { classes } = props;
+  const name = props.name.replace("\\", "");
 
   return (
     <React.Fragment>
@@ -67,6 +76,23 @@ const Room = props => {
           </ListItem>
         </List>
       )}
+      {props.room && props.name && (
+        <Paper className={classes.text} elevation={1}>
+          <Typography variant="h6" component="h3">
+            Display Name: {name}
+          </Typography>
+        </Paper>
+      )}
+      {props.room && !props.name && (
+        <Paper className={classes.text} elevation={1}>
+          <Typography variant="h6" component="h3">
+            Okay... really funny... Now be sure to tell everyone that you're the
+            one that didn't put their name in.... and that your name shows up
+            blank in the UI. Way to go, dood!
+          </Typography>
+        </Paper>
+      )}
+
       {props.room &&
         props.setupInfo &&
         props.setupInfo.characters &&

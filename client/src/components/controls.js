@@ -79,7 +79,7 @@ const Controls = props => {
 
   if (!props.admin) {
     return (
-      <Typography className={classes.gameStart} variant="p" component="p">
+      <Typography className={classes.gameStart} component="p">
         Waiting for game to start...
       </Typography>
     );

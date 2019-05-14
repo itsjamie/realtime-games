@@ -53,7 +53,10 @@ class Room {
     }
 
     joinPlayer(socket, admin) {
-        this.players.push(socket)
+        const state = SocketState.get(socket.id)
+            ,name=state.name || 'Player'+this.players.length;
+        
+        this.players.push({socket, name})
         socket.join(this.setup.name)
 
         if (admin) {
@@ -62,16 +65,16 @@ class Room {
         }
 
         socket.emit('setupInfo', JSON.stringify(this.setup, null, 4))
-        this.io.to(this.setup.name).emit('playerCount', this.players.length);        
+        this.io.to(this.setup.name).emit('players', this.players.map(getPlayerName));        
     }
 
     removePlayer(socket) {
         const idx = this.players.findIndex((s) => {
-            return (socket.id === s.id)
+            return (socket.id === s.socket.id)
         })
         
         this.players.splice(idx, 1);
-        this.io.to(this.setup.name).emit('playerCount', this.players.length);
+        this.io.to(this.setup.name).emit('players', this.players.map(getPlayerName));
     }
 
     listenAdmin(socket) {
@@ -148,6 +151,10 @@ const AvalonGameInfo = (players, deck, num) => {
             players[playerIndex].emit('gameInfo', JSON.stringify(shuffledRoles))
         }
     }
+}
+
+const getPlayerName = (player) => {
+    return player.name;
 }
 
 module.exports = new RoomManager();

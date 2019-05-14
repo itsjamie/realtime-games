@@ -74,7 +74,7 @@ function TopBar(props) {
           >
             <MenuItem onClick={handleClose}>
               <Avatar>
-                <i class="material-icons">lock</i>
+                <i className="material-icons">lock</i>
               </Avatar>
               <ListItemText
                 primary="Admin"
@@ -84,7 +84,7 @@ function TopBar(props) {
 
             <MenuItem onClick={handleClose}>
               <Avatar>
-                <i class="material-icons">link</i>
+                <i className="material-icons">link</i>
               </Avatar>
               <ListItemText
                 primary="Connected"
@@ -99,14 +99,14 @@ function TopBar(props) {
             Realtime Games
           </Typography>
 
-          {props.room && <i class="material-icons">people</i>}
+          {props.room && <i className="material-icons">people</i>}
           {props.room && (
             <Typography
               variant="h6"
               color="inherit"
               className={classes.players}
             >
-              {props.playerCount}
+              {props.players.length}
             </Typography>
           )}
         </Toolbar>
@@ -120,7 +120,7 @@ function TopBar(props) {
               className={classes.fab}
               onClick={() => window.location.reload(true)}
             >
-              <i class="material-icons">arrow_back</i>
+              <i className="material-icons">arrow_back</i>
             </Fab>
 
             <Typography variant="h6" color="inherit">

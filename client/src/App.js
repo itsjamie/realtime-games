@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import io from "socket.io-client";
 import Room from "./components/room";
@@ -22,7 +21,7 @@ class App extends Component {
       connected: false,
       playing: false,
       character: "",
-      playerCount: 0,
+      players: [],
       setupInfo: {},
       gameInfo: [],
       showBaby: false
@@ -58,9 +57,9 @@ class App extends Component {
         character
       });
     });
-    socket.on("playerCount", playerCount => {
+    socket.on("players", players => {
       this.setState({
-        playerCount
+        players
       });
     });
     socket.on("setupInfo", setupInfo => {

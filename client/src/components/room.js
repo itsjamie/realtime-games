@@ -3,7 +3,6 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Avatar from "@material-ui/core/Avatar";
-import ImageIcon from "@material-ui/icons/Image";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -27,7 +26,7 @@ const styles = theme => ({
 });
 
 const Room = props => {
-  const { classes } = props;
+  const { classes, players } = props;
   const name = props.name.replace("\\", "");
 
   return (
@@ -81,6 +80,19 @@ const Room = props => {
           <Typography variant="h6" component="h3">
             Display Name: {name}
           </Typography>
+        </Paper>
+      )}
+      {props.room && players && (
+        <Paper className={classes.text} elevation={1}>
+          <Typography variant="h6" component="h3">
+            Players Joined
+          </Typography>
+          <hr></hr>
+          {players.map(playerName => 
+          <Typography variant="h6" component="h3">
+            {playerName}
+          </Typography>
+          )}
         </Paper>
       )}
       {props.room && !props.name && (

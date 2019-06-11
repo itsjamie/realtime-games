@@ -7,7 +7,7 @@ import { Button } from "@material-ui/core/";
 const styles = theme => ({
   button: {
     marginTop: "15px",
-    width: "78%"
+    width: "70%"
   },
   form: {
     display: "flex",
@@ -17,7 +17,7 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: "78%"
+    width: "70%"
   },
   dense: {
     marginTop: 19

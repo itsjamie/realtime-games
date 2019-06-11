@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core/";
 import classNames from "classnames";
+import Input from "@material-ui/core/Input";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
@@ -14,6 +15,10 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
     width: "80%"
+  },
+  input: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit
   },
   dense: {
     marginTop: 19
@@ -49,6 +54,10 @@ const Controls = props => {
 
         <Typography>
           <ul>{listGameInfo}</ul>
+        </Typography>
+
+        <Typography className={classes.heading}>
+          The game will start with {props.startingPlayer.toString()}
         </Typography>
       </div>
     );
@@ -90,7 +99,11 @@ const Controls = props => {
   return (
     <React.Fragment>
       <form onSubmit={addCharacter}>
-        <input name="name" type="text" placeholder="Character..." />
+        <Input
+          className={classes.input}
+          name="name"
+          placeholder="Character..."
+        />
       </form>
       <Button
         variant="outlined"
@@ -104,7 +117,8 @@ const Controls = props => {
       </Button>
       <form onSubmit={startGame}>
         <Button
-          size="small"
+          variant="outlined"
+          size="large"
           color="primary"
           className={classes.margin}
           type="submit"

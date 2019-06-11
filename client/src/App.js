@@ -24,7 +24,8 @@ class App extends Component {
       players: [],
       setupInfo: {},
       gameInfo: [],
-      showBaby: false
+      showBaby: false,
+      startingPlayer: ""
     };
 
     socket.on("connect", () => {
@@ -60,6 +61,11 @@ class App extends Component {
     socket.on("players", players => {
       this.setState({
         players
+      });
+    });
+    socket.on("startingPlayer", startingPlayer => {
+      this.setState({
+        startingPlayer
       });
     });
     socket.on("setupInfo", setupInfo => {
@@ -142,6 +148,7 @@ class App extends Component {
           joinRoom={this.joinRoom}
           selectPreset={this.selectPreset}
           startGame={this.startGame}
+          startingPlayer={this.state.startingPlayer}
         />
         <GameControls
           admin={this.state.admin}

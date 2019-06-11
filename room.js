@@ -1,160 +1,179 @@
-const shuffle = require('fisher-yates-shuffle')
-const generateNumber = require('random-number-csprng');
-const { SocketState } = require('./socket-state');
+const shuffle = require("fisher-yates-shuffle");
+const generateNumber = require("random-number-csprng");
+const { SocketState } = require("./socket-state");
 
 class RoomManager {
-    constructor() {
-        this.rooms = {}
-    }
+  constructor() {
+    this.rooms = {};
+  }
 
-    setIO(io) {
-        this.io = io
-    }
+  setIO(io) {
+    this.io = io;
+  }
 
-    onConnect(socket) {
-        socket.on('room', (roomName) => {
-            this.joinRoom(socket, roomName)
-            const state = SocketState.get(socket.id)
+  onConnect(socket) {
+    socket.on("room", roomName => {
+      this.joinRoom(socket, roomName);
+      const state = SocketState.get(socket.id);
 
-            socket.on('disconnect', () => {
-                this.rooms[roomName].removePlayer(socket)
-                if (this.rooms[roomName].players.length === 0) {
-                    delete this.rooms[roomName]
-                }
-            })
-        })
-    }
-
-    createRoom(roomName) {
-        this.rooms[roomName] = new Room(roomName, this.io)
-    }
-
-    joinRoom(socket, roomName) {
-        let admin = false;
-        if (!this.rooms[roomName]) {
-            admin = true;
-            this.createRoom(roomName)
+      socket.on("disconnect", () => {
+        this.rooms[roomName].removePlayer(socket);
+        if (this.rooms[roomName].players.length === 0) {
+          delete this.rooms[roomName];
         }
-        this.rooms[roomName].joinPlayer(socket, admin)
+      });
+    });
+  }
+
+  createRoom(roomName) {
+    this.rooms[roomName] = new Room(roomName, this.io);
+  }
+
+  joinRoom(socket, roomName) {
+    let admin = false;
+    if (!this.rooms[roomName]) {
+      admin = true;
+      this.createRoom(roomName);
     }
+    this.rooms[roomName].joinPlayer(socket, admin);
+  }
 }
 
-const UNSET_MAX_PLAYERS = Number.POSITIVE_INFINITY
+const UNSET_MAX_PLAYERS = Number.POSITIVE_INFINITY;
 class Room {
-    constructor(name, io) {
-        this.setup = {
-            characters: [],
-            game: 'freeform',
-            maxPlayers: UNSET_MAX_PLAYERS,
-            name: name,        
-        }
-        this.players = []
-        this.io = io
+  constructor(name, io) {
+    this.setup = {
+      characters: [],
+      game: "freeform",
+      maxPlayers: UNSET_MAX_PLAYERS,
+      name: name
+    };
+    this.players = [];
+    this.io = io;
+  }
+
+  joinPlayer(socket, admin) {
+    const state = SocketState.get(socket.id),
+      name = state.name || "Player" + this.players.length;
+
+    this.players.push({ socket, name });
+    socket.join(this.setup.name);
+
+    if (admin) {
+      this.listenAdmin(socket);
+      socket.emit("admin");
     }
 
-    joinPlayer(socket, admin) {
-        const state = SocketState.get(socket.id)
-            ,name=state.name || 'Player'+this.players.length;
-        
-        this.players.push({socket, name})
-        socket.join(this.setup.name)
+    socket.emit("setupInfo", JSON.stringify(this.setup, null, 4));
+    this.io
+      .to(this.setup.name)
+      .emit("players", this.players.map(getPlayerName));
+  }
 
-        if (admin) {
-            this.listenAdmin(socket)
-            socket.emit('admin');
-        }
+  removePlayer(socket) {
+    const idx = this.players.findIndex(s => {
+      return socket.id === s.socket.id;
+    });
 
-        socket.emit('setupInfo', JSON.stringify(this.setup, null, 4))
-        this.io.to(this.setup.name).emit('players', this.players.map(getPlayerName));        
+    this.players.splice(idx, 1);
+    this.io
+      .to(this.setup.name)
+      .emit("players", this.players.map(getPlayerName));
+  }
+
+  listenAdmin(socket) {
+    socket.on("addCharacter", name => {
+      this.addCharacter(name);
+    });
+
+    socket.on("setGame", name => {
+      this.setup.game = name;
+      this.io
+        .to(this.setup.name)
+        .emit("setupInfo", JSON.stringify(this.setup, null, 4));
+    });
+
+    socket.on("startGame", () => {
+      this.startGame().then(() => {
+        console.log("started game");
+      });
+    });
+  }
+
+  addCharacter(characterName) {
+    this.setup.characters.push(characterName);
+    this.io
+      .to(this.setup.name)
+      .emit("setupInfo", JSON.stringify(this.setup, null, 4));
+  }
+
+  async startGame() {
+    const num = await generateNumber(0, 1000);
+    const shuffledCards = shuffle(this.setup.characters, () => num / 1000);
+    for (let i = 0; i < shuffledCards.length; i++) {
+      this._assignCharacter(this.players[i].socket, shuffledCards[i]);
     }
 
-    removePlayer(socket) {
-        const idx = this.players.findIndex((s) => {
-            return (socket.id === s.socket.id)
-        })
-        
-        this.players.splice(idx, 1);
-        this.io.to(this.setup.name).emit('players', this.players.map(getPlayerName));
+    switch (this.setup.game) {
+      case "Avalon":
+        AvalonGameInfo(this.players, shuffledCards, num);
+        break;
     }
 
-    listenAdmin(socket) {
-        socket.on('addCharacter', (name) => {
-            this.addCharacter(name)
-        })
+    this.io
+      .to(this.setup.name)
+      .emit("startingPlayer", _determineStartingPlayer(this.players));
+    this.io.to(this.setup.name).emit("startGame");
+  }
 
-        socket.on('setGame', (name) => {
-            this.setup.game = name
-            this.io.to(this.setup.name).emit('setupInfo', JSON.stringify(this.setup, null, 4))
-        })
+  _assignCharacter(socket, character) {
+    socket.emit("character", character);
+  }
 
-        socket.on('startGame', () => {
-            this.startGame().then(() => {
-                console.log("started game")
-            })
-        })
-    }
-    
-    addCharacter(characterName) {
-        this.setup.characters.push(characterName)
-        this.io.to(this.setup.name).emit('setupInfo', JSON.stringify(this.setup, null, 4))
-    }
-
-    async startGame() {
-        const num = await generateNumber(0, 1000)
-        const shuffledCards = shuffle(this.setup.characters, () => num / 1000)
-        for (let i = 0; i < shuffledCards.length; i++) {
-            this._assignCharacter(this.players[i].socket, shuffledCards[i])
-        }
-
-        switch (this.setup.game) {
-        case "Avalon":
-            AvalonGameInfo(this.players, shuffledCards, num)
-            break;
-        }
-
-        this.io.to(this.setup.name).emit('startGame')
-    }
-
-    _assignCharacter(socket, character) {
-        socket.emit('character', character)
-    }
+  _determineStartingPlayer(players) {
+    const shufflePlayers = shuffle(players, () => num / 1000);
+    return shufflePlayers[0];
+  }
 }
 
 const AvalonGamePlayerInfo = [
-   { name: "Merlin", knows: ["Morgana", "Oberon", "Assassin"]},
-   { name: "Loyal", knows: []},
-   { name: "Percival", knows: ["Merlin", "Morgana"]},
-   { name: "Morgana", knows: ["Mordred", "Assassin"]},
-   { name: "Assassin", knows: ["Mordred", "Morgana"]},
-   { name: "Mordred", knows: ["Morgana", "Assassin"]},
-   { name: "Oberon", knows: []}
+  { name: "Merlin", knows: ["Morgana", "Oberon", "Assassin"] },
+  { name: "Loyal", knows: [] },
+  { name: "Percival", knows: ["Merlin", "Morgana"] },
+  { name: "Morgana", knows: ["Mordred", "Assassin"] },
+  { name: "Assassin", knows: ["Mordred", "Morgana"] },
+  { name: "Mordred", knows: ["Morgana", "Assassin"] },
+  { name: "Oberon", knows: [] }
 ];
 
 const getKnownAvalonPlayers = (knownList, players, deck) => {
-    return knownList.reduce((knownNames, name) => {
-        const index = deck.findIndex(card => card == name);
-        if (index !== -1 && SocketState.get(players[index].socket.id)) {
-            knownNames.push(SocketState.get(players[index].socket.id).name);
-        }
-        return knownNames;
-    }, []);
-}
+  return knownList.reduce((knownNames, name) => {
+    const index = deck.findIndex(card => card == name);
+    if (index !== -1 && SocketState.get(players[index].socket.id)) {
+      knownNames.push(SocketState.get(players[index].socket.id).name);
+    }
+    return knownNames;
+  }, []);
+};
 
 const AvalonGameInfo = (players, deck, num) => {
-    for (let i = 0; i < AvalonGamePlayerInfo.length; i++) {
-        const playerData = AvalonGamePlayerInfo[i];
-        const playerIndex = deck.findIndex(card => card == playerData.name);
-        if (playerIndex !== -1) {
-            data = getKnownAvalonPlayers(playerData.knows, players, deck);
+  for (let i = 0; i < AvalonGamePlayerInfo.length; i++) {
+    const playerData = AvalonGamePlayerInfo[i];
+    const playerIndex = deck.findIndex(card => card == playerData.name);
+    if (playerIndex !== -1) {
+      data = getKnownAvalonPlayers(playerData.knows, players, deck);
 
-            const shuffledRoles = shuffle(data, () => num / 1000)
-            players[playerIndex].socket.emit('gameInfo', JSON.stringify(shuffledRoles))
-        }
+      const shuffledRoles = shuffle(data, () => num / 1000);
+      players[playerIndex].socket.emit(
+        "gameInfo",
+        JSON.stringify(shuffledRoles)
+      );
     }
-}
+  }
+};
 
-const getPlayerName = (player) => {
-    return player.name;
-}
+const getPlayerName = player => {
+  return player.name;
+};
 
 module.exports = new RoomManager();

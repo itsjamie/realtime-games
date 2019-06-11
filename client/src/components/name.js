@@ -2,16 +2,22 @@ import React from "react";
 import TextField from "@material-ui/core/TextField";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
+import { Button } from "@material-ui/core/";
 
 const styles = theme => ({
-  container: {
+  button: {
+    marginTop: "15px",
+    width: "78%"
+  },
+  form: {
     display: "flex",
-    flexWrap: "wrap"
+    alignItems: "center",
+    flexFlow: "column"
   },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200
+    width: "78%"
   },
   dense: {
     marginTop: 19
@@ -23,15 +29,18 @@ const styles = theme => ({
 
 const Name = props => {
   const { classes } = props;
-  const setName = e => {
-    e.preventDefault();
-    window.localStorage.setItem("name", e.target.name.value);
-    props.onNameSet(e.target.name.value);
+  const setName = ({ target }) => {
+    const name = target.parentElement.previousElementSibling.querySelector(
+      "input"
+    ).value;
+
+    window.localStorage.setItem("name", name);
+    props.onNameSet(name);
   };
 
   if (!props.name) {
     return (
-      <form onSubmit={setName}>
+      <form className={classNames(classes.form)} onSubmit={() => false}>
         <TextField
           id="standard-dense"
           label="Enter your name:"
@@ -39,6 +48,14 @@ const Name = props => {
           className={classNames(classes.textField, classes.dense)}
           margin="dense"
         />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={setName}
+          className={classes.button}
+        >
+          Enter Name
+        </Button>
       </form>
     );
   }

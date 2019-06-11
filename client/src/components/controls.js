@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core/";
 import classNames from "classnames";
-import Input from "@material-ui/core/Input";
+import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
 const styles = theme => ({
@@ -57,7 +57,7 @@ const Controls = props => {
   if (!props.room) {
     return (
       <form className={classes.joinRoom} onSubmit={() => false}>
-        <Input
+        <TextField
           id="standard-dense"
           placeholder="Enter room name:"
           name="room"

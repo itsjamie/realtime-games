@@ -90,6 +90,14 @@ class App extends Component {
     });
   };
 
+  resetName = () => {
+    window.localStorage.removeItem("name");
+    socket.emit("setName", "");
+    this.setState({
+      name: ""
+    });
+  };
+
   selectPreset(e) {
     e.preventDefault();
     socket.emit("setGame", e.currentTarget.value);
@@ -124,6 +132,7 @@ class App extends Component {
           startGame={this.startGame}
           toggleShowBaby={this.toggleShowBaby}
           showBaby={this.state.showBaby}
+          resetName={this.resetName}
         />
         <Name name={this.state.name} onNameSet={this.setName} />
         <Room {...this.state} />

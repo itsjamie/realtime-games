@@ -130,7 +130,7 @@ class Room {
     socket.emit("character", character);
   }
 
-  _determineStartingPlayer(players) {
+  _determineStartingPlayer(players, num) {
     const shufflePlayers = shuffle(players, () => num / 1000);
     return shufflePlayers[0];
   }

@@ -52,6 +52,11 @@ function TopBar(props) {
     handleClose();
   };
 
+  const handleNameReset = () => {
+    props.resetName();
+    handleClose();
+  };
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -91,8 +96,22 @@ function TopBar(props) {
                 secondary={props.connected.toString()}
               />
             </MenuItem>
+            <MenuItem onClick={handleNameReset}>
+              <Avatar>
+                <i className="material-icons">wc</i>
+              </Avatar>
+              <ListItemText
+                primary="Reset Name"
+                secondary={window.localStorage.getItem("name")}
+              />
+            </MenuItem>
             <MenuItem onClick={() => handleBabyClick()}>
-              {props.showBaby ? "Hide Baby" : "Show Baby"}
+              <Avatar>
+                <i className="material-icons">face</i>
+              </Avatar>
+              <ListItemText
+                primary={props.showBaby ? "Hide Baby" : "Show Baby"}
+              />
             </MenuItem>
           </Menu>
           <Typography variant="h6" color="inherit" className={classes.grow}>

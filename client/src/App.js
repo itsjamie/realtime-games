@@ -24,7 +24,8 @@ class App extends Component {
       players: [],
       setupInfo: {},
       gameInfo: [],
-      showBaby: false
+      showBaby: false,
+      startingPlayer: ""
     };
 
     socket.on("connect", () => {
@@ -62,6 +63,11 @@ class App extends Component {
         players
       });
     });
+    socket.on("startingPlayer", startingPlayer => {
+      this.setState({
+        startingPlayer
+      });
+    });
     socket.on("setupInfo", setupInfo => {
       const setup = JSON.parse(setupInfo);
       this.setState({
@@ -87,6 +93,14 @@ class App extends Component {
     socket.emit("setName", name);
     this.setState({
       name
+    });
+  };
+
+  resetName = () => {
+    window.localStorage.removeItem("name");
+    socket.emit("setName", "");
+    this.setState({
+      name: ""
     });
   };
 
@@ -124,6 +138,7 @@ class App extends Component {
           startGame={this.startGame}
           toggleShowBaby={this.toggleShowBaby}
           showBaby={this.state.showBaby}
+          resetName={this.resetName}
         />
         <Name name={this.state.name} onNameSet={this.setName} />
         <Room {...this.state} />
@@ -133,6 +148,7 @@ class App extends Component {
           joinRoom={this.joinRoom}
           selectPreset={this.selectPreset}
           startGame={this.startGame}
+          startingPlayer={this.state.startingPlayer}
         />
         <GameControls
           admin={this.state.admin}

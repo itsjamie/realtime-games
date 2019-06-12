@@ -122,7 +122,7 @@ class Room {
 
     this.io
       .to(this.setup.name)
-      .emit("startingPlayer", _determineStartingPlayer(this.players));
+      .emit("startingPlayer", _determineStartingPlayer(this.players, num));
     this.io.to(this.setup.name).emit("startGame");
   }
 

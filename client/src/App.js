@@ -48,9 +48,10 @@ class App extends Component {
         admin: true
       });
     });
-    socket.on("startGame", () => {
+    socket.on("startGame", startingPlayer => {
       this.setState({
-        playing: true
+        playing: true,
+        startingPlayer: startingPlayer
       });
     });
     socket.on("character", character => {
@@ -61,11 +62,6 @@ class App extends Component {
     socket.on("players", players => {
       this.setState({
         players
-      });
-    });
-    socket.on("startingPlayer", startingPlayer => {
-      this.setState({
-        startingPlayer
       });
     });
     socket.on("setupInfo", setupInfo => {

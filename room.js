@@ -122,8 +122,7 @@ class Room {
 
     this.io
       .to(this.setup.name)
-      .emit("startingPlayer", this._determineStartingPlayer(this.players, num));
-    this.io.to(this.setup.name).emit("startGame");
+      .emit("startGame", this._determineStartingPlayer(this.players, num));
   }
 
   _assignCharacter(socket, character) {
@@ -132,7 +131,7 @@ class Room {
 
   _determineStartingPlayer(players, num) {
     const shufflePlayers = shuffle(players, () => num / 1000);
-    return shufflePlayers[0];
+    return shufflePlayers[0].name;
   }
 }
 

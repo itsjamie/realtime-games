@@ -48,10 +48,9 @@ class App extends Component {
         admin: true
       });
     });
-    socket.on("startGame", startingPlayer => {
+    socket.on("startGame", () => {
       this.setState({
-        playing: true,
-        startingPlayer: startingPlayer
+        playing: true
       });
     });
     socket.on("character", character => {
@@ -71,9 +70,10 @@ class App extends Component {
         setupInfo: setup
       });
     });
-    socket.on("gameInfo", gameInfo => {
+    socket.on("gameInfo", (gameInfo, startingPlayer) => {
       this.setState({
-        gameInfo: JSON.parse(gameInfo)
+        gameInfo: JSON.parse(gameInfo),
+        startingPlayer
       });
     });
   }

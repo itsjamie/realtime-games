@@ -110,19 +110,18 @@ class Room {
   async startGame() {
     const num = await generateNumber(0, 1000);
     const shuffledCards = shuffle(this.setup.characters, () => num / 1000);
+    const startingPlayer = this._determineStartingPlayer(this.players, num);
     for (let i = 0; i < shuffledCards.length; i++) {
       this._assignCharacter(this.players[i].socket, shuffledCards[i]);
     }
 
     switch (this.setup.game) {
       case "Avalon":
-        AvalonGameInfo(this.players, shuffledCards, num);
+        AvalonGameInfo(this.players, shuffledCards, num, startingPlayer);
         break;
     }
 
-    this.io
-      .to(this.setup.name)
-      .emit("startGame", this._determineStartingPlayer(this.players, num));
+    this.io.to(this.setup.name).emit("startGame");
   }
 
   _assignCharacter(socket, character) {
@@ -155,7 +154,7 @@ const getKnownAvalonPlayers = (knownList, players, deck) => {
   }, []);
 };
 
-const AvalonGameInfo = (players, deck, num) => {
+const AvalonGameInfo = (players, deck, num, startingPlayer) => {
   for (let i = 0; i < AvalonGamePlayerInfo.length; i++) {
     const playerData = AvalonGamePlayerInfo[i];
     const playerIndex = deck.findIndex(card => card == playerData.name);
@@ -165,7 +164,8 @@ const AvalonGameInfo = (players, deck, num) => {
       const shuffledRoles = shuffle(data, () => num / 1000);
       players[playerIndex].socket.emit(
         "gameInfo",
-        JSON.stringify(shuffledRoles)
+        JSON.stringify(shuffledRoles),
+        startingPlayer
       );
     }
   }

@@ -63,11 +63,6 @@ class App extends Component {
         players
       });
     });
-    socket.on("startingPlayer", startingPlayer => {
-      this.setState({
-        startingPlayer
-      });
-    });
     socket.on("setupInfo", setupInfo => {
       const setup = JSON.parse(setupInfo);
       this.setState({
@@ -75,9 +70,10 @@ class App extends Component {
         setupInfo: setup
       });
     });
-    socket.on("gameInfo", gameInfo => {
+    socket.on("gameInfo", (gameInfo, startingPlayer) => {
       this.setState({
-        gameInfo: JSON.parse(gameInfo)
+        gameInfo: JSON.parse(gameInfo),
+        startingPlayer
       });
     });
   }

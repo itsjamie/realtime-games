@@ -158,14 +158,18 @@ const AvalonGameInfo = (players, deck, num, startingPlayer) => {
   for (let i = 0; i < AvalonGamePlayerInfo.length; i++) {
     const playerData = AvalonGamePlayerInfo[i];
     const playerIndex = deck.findIndex(card => card == playerData.name);
+
+    for (let i = 0; i < players.length; i++) {
+      players[i].socket.emit("startingPlayer", startingPlayer);
+    }
+
     if (playerIndex !== -1) {
       data = getKnownAvalonPlayers(playerData.knows, players, deck);
 
       const shuffledRoles = shuffle(data, () => num / 1000);
       players[playerIndex].socket.emit(
         "gameInfo",
-        JSON.stringify(shuffledRoles),
-        startingPlayer
+        JSON.stringify(shuffledRoles)
       );
     }
   }

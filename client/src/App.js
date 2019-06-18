@@ -72,7 +72,11 @@ class App extends Component {
     });
     socket.on("gameInfo", (gameInfo, startingPlayer) => {
       this.setState({
-        gameInfo: JSON.parse(gameInfo),
+        gameInfo: JSON.parse(gameInfo)
+      });
+    });
+    socket.on("startingPlayer", startingPlayer => {
+      this.setState({
         startingPlayer
       });
     });
@@ -146,11 +150,13 @@ class App extends Component {
           startGame={this.startGame}
           startingPlayer={this.state.startingPlayer}
         />
-        <GameControls
-          admin={this.state.admin}
-          game={this.state.setupInfo.game}
-          addCharacter={this.addCharacterWithName}
-        />
+        {!this.state.playing && (
+          <GameControls
+            admin={this.state.admin}
+            game={this.state.setupInfo.game}
+            addCharacter={this.addCharacterWithName}
+          />
+        )}
         <Baby showBaby={this.state.showBaby} />
       </React.Fragment>
     );

@@ -6,7 +6,7 @@ const io = require('socket.io')(http, {
     serveClient: false,
 });
 const { SocketState } = require('./socket-state')
-const RoomManager = require('./room');
+const RoomManager = require('./room-manager');
 RoomManager.setIO(io);
 
 app.use(express.static(path.resolve('client', 'build')))

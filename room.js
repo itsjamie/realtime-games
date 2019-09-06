@@ -1,45 +1,10 @@
 const shuffle = require("fisher-yates-shuffle");
 const generateNumber = require("random-number-csprng");
 const { SocketState } = require("./socket-state");
-
-class RoomManager {
-  constructor() {
-    this.rooms = {};
-  }
-
-  setIO(io) {
-    this.io = io;
-  }
-
-  onConnect(socket) {
-    socket.on("room", roomName => {
-      this.joinRoom(socket, roomName);
-      const state = SocketState.get(socket.id);
-
-      socket.on("disconnect", () => {
-        this.rooms[roomName].removePlayer(socket);
-        if (this.rooms[roomName].players.length === 0) {
-          delete this.rooms[roomName];
-        }
-      });
-    });
-  }
-
-  createRoom(roomName) {
-    this.rooms[roomName] = new Room(roomName, this.io);
-  }
-
-  joinRoom(socket, roomName) {
-    let admin = false;
-    if (!this.rooms[roomName]) {
-      admin = true;
-      this.createRoom(roomName);
-    }
-    this.rooms[roomName].joinPlayer(socket, admin);
-  }
-}
+const { AvalonGameBeforeStart } = require('./avalon');
 
 const UNSET_MAX_PLAYERS = Number.POSITIVE_INFINITY;
+
 class Room {
   constructor(name, io) {
     this.setup = {
@@ -50,13 +15,14 @@ class Room {
     };
     this.players = [];
     this.io = io;
+    this.roomGame;
   }
 
   joinPlayer(socket, admin) {
-    const state = SocketState.get(socket.id),
-      name = state.name || "Player" + this.players.length;
+    const state = SocketState.get(socket.id);
+    const name = state.name || "Player" + this.players.length;
 
-    this.players.push({ socket, name });
+    this.players.push({ socket, name, admin });
     socket.join(this.setup.name);
 
     if (admin) {
@@ -65,9 +31,8 @@ class Room {
     }
 
     socket.emit("setupInfo", JSON.stringify(this.setup, null, 4));
-    this.io
-      .to(this.setup.name)
-      .emit("players", this.players.map(getPlayerName));
+    this.io.to(this.setup.name)
+      .emit("players", this.players.map(player => player.name));
   }
 
   removePlayer(socket) {
@@ -76,9 +41,8 @@ class Room {
     });
 
     this.players.splice(idx, 1);
-    this.io
-      .to(this.setup.name)
-      .emit("players", this.players.map(getPlayerName));
+    this.io.to(this.setup.name)
+      .emit("players", this.players.map(player => player.name));
   }
 
   listenAdmin(socket) {
@@ -102,8 +66,7 @@ class Room {
 
   addCharacter(characterName) {
     this.setup.characters.push(characterName);
-    this.io
-      .to(this.setup.name)
+    this.io.to(this.setup.name)
       .emit("setupInfo", JSON.stringify(this.setup, null, 4));
   }
 
@@ -117,7 +80,10 @@ class Room {
 
     switch (this.setup.game) {
       case "Avalon":
-        AvalonGameInfo(this.players, shuffledCards, num, startingPlayer);
+        AvalonGameBeforeStart(this.players, shuffledCards, num, startingPlayer);
+        break;
+      case "Dethy":
+        this.roomGame = DethyGameBeforeStart(this.players, shuffledCards, num, io, this.setup.name);
         break;
     }
 
@@ -134,49 +100,6 @@ class Room {
   }
 }
 
-const AvalonGamePlayerInfo = [
-  { name: "Merlin", knows: ["Morgana", "Oberon", "Assassin"] },
-  { name: "Loyal", knows: [] },
-  { name: "Percival", knows: ["Merlin", "Morgana"] },
-  { name: "Morgana", knows: ["Mordred", "Assassin"] },
-  { name: "Assassin", knows: ["Mordred", "Morgana"] },
-  { name: "Mordred", knows: ["Morgana", "Assassin"] },
-  { name: "Oberon", knows: [] }
-];
-
-const getKnownAvalonPlayers = (knownList, players, deck) => {
-  return knownList.reduce((knownNames, name) => {
-    const index = deck.findIndex(card => card == name);
-    if (index !== -1 && SocketState.get(players[index].socket.id)) {
-      knownNames.push(SocketState.get(players[index].socket.id).name);
-    }
-    return knownNames;
-  }, []);
-};
-
-const AvalonGameInfo = (players, deck, num, startingPlayer) => {
-  for (let i = 0; i < AvalonGamePlayerInfo.length; i++) {
-    const playerData = AvalonGamePlayerInfo[i];
-    const playerIndex = deck.findIndex(card => card == playerData.name);
-
-    for (let i = 0; i < players.length; i++) {
-      players[i].socket.emit("startingPlayer", startingPlayer);
-    }
-
-    if (playerIndex !== -1) {
-      data = getKnownAvalonPlayers(playerData.knows, players, deck);
-
-      const shuffledRoles = shuffle(data, () => num / 1000);
-      players[playerIndex].socket.emit(
-        "gameInfo",
-        JSON.stringify(shuffledRoles)
-      );
-    }
-  }
-};
-
-const getPlayerName = player => {
-  return player.name;
-};
-
-module.exports = new RoomManager();
+module.exports = {
+  Room,
+}

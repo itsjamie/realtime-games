@@ -102,7 +102,7 @@ class Room {
     socket.on('startWithAutoRoles', () => {
       if(AvalonAutoRoles(this.players.length, this.setup)) {
         this.startGame().then(() => {
-          console.log(`started game with auto roles for ${numPlayers} players`);
+          console.log(`started game with auto roles for ${this.players.length} players`);
         });
       }
     });
@@ -142,7 +142,7 @@ class Room {
   }
 }
 
-const AvalonAutoRoles = (setup) => {
+const AvalonAutoRoles = (numPlayers, setup) => {
     if (numPlayers < 5 || numPlayers > 10) return false;
 
     const AvalonBaseConfiguration = ['Merlin', 'Mordred', 'Oberon', 'Loyal Servant', 'Loyal Servant']

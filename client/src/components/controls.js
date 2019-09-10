@@ -46,22 +46,6 @@ const styles = theme => ({
 const Controls = props => {
   const { classes } = props;
   const [room, setRoom] = useState(null);
-  if (props.playing) {
-    const listGameInfo = props.gameInfo.map(item => <li>{item}</li>);
-    return (
-      <div>
-        <Typography className={classes.heading}>You See:</Typography>
-
-        <Typography>
-          <ul>{listGameInfo}</ul>
-        </Typography>
-
-        <Typography className={classes.heading}>
-          The game will start with {props.startingPlayer.toString()}
-        </Typography>
-      </div>
-    );
-  }
 
   if (!props.room) {
     return (

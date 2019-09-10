@@ -20,6 +20,7 @@ const styles = theme => ({
     padding: "10px",
     width: "80%",
     margin: "0 auto",
+    marginTop: "10px",
     textAlign: "center",
     marginBottom: "19px"
   }
@@ -29,8 +30,20 @@ const Room = props => {
   const { classes, players } = props;
   const name = props.name.replace("\\", "");
 
+  let listGameInfo = null;
+  if (props.playing) {
+    listGameInfo = props.gameInfo.map(item => <li>{item}</li>);
+  }
+
   return (
     <React.Fragment>
+      {props.room && props.name && (
+        <Paper className={classes.text} elevation={1}>
+          <Typography variant="h6" component="h3">
+            Display Name: {name}
+          </Typography>
+        </Paper>
+      )}
       {props.room && (
         <List className={classes.root}>
           <ListItem>
@@ -75,12 +88,18 @@ const Room = props => {
           </ListItem>
         </List>
       )}
-      {props.room && props.name && (
-        <Paper className={classes.text} elevation={1}>
-          <Typography variant="h6" component="h3">
-            Display Name: {name}
+      {props.room && props.playing && (
+        <div>
+          <Typography className={classes.heading}>You See:</Typography>
+  
+          <Typography>
+            <ul>{listGameInfo}</ul>
           </Typography>
-        </Paper>
+
+          <Typography className={classes.heading}>
+          The game will start with {props.startingPlayer.toString()}
+          </Typography>
+        </div>
       )}
       {props.room && players && (
         <Paper className={classes.text} elevation={1}>

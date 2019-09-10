@@ -160,7 +160,7 @@ class App extends Component {
             game={this.state.setupInfo.game}
             addCharacter={this.addCharacterWithName}
             startWithAutoRoles={this.startWithAutoRoles}
-            playerCount={this.state.playerCount}
+            playerCount={this.state.players.length}
           />
         )}
         <Baby showBaby={this.state.showBaby} />

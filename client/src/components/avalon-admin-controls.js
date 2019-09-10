@@ -27,6 +27,16 @@ const AvalonAdminControls = props => {
 
   return (
     <React.Fragment>
+      <Button
+        variant="outlined"
+        size="small"
+        color="primary"
+        className={classes.margin}
+        onClick={() => props.startWithAutoRoles() }
+        disabled={props.playerCount < 5 || props.playerCount > 10}
+      >
+        {`Auto Roles x ${props.playerCount}`}
+      </Button>
       {characters.map(character => (
         <Button
           variant="outlined"
@@ -38,6 +48,7 @@ const AvalonAdminControls = props => {
           {character}
         </Button>
       ))}
+      
     </React.Fragment>
   );
 };

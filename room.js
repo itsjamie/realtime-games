@@ -98,6 +98,14 @@ class Room {
         console.log("started game");
       });
     });
+
+    socket.on('startWithAutoRoles', () => {
+      if(AvalonAutoRoles(this.players.length, this.setup)) {
+        this.startGame().then(() => {
+          console.log(`started game with auto roles for ${numPlayers} players`);
+        });
+      }
+    });
   }
 
   addCharacter(characterName) {
@@ -134,9 +142,26 @@ class Room {
   }
 }
 
+const AvalonAutoRoles = (setup) => {
+    if (numPlayers < 5 || numPlayers > 10) return false;
+
+    const AvalonBaseConfiguration = ['Merlin', 'Mordred', 'Oberon', 'Loyal Servant', 'Loyal Servant']
+    const AvalonConfigurations = [
+        AvalonBaseConfiguration,
+        AvalonBaseConfiguration.concat(['Loyal Servant']),
+        AvalonBaseConfiguration.concat(['Percival', 'Morgana']),
+        AvalonBaseConfiguration.concat(['Percival', 'Morgana', 'Loyal Servant']),
+        AvalonBaseConfiguration.concat(['Percival', 'Morgana', 'Loyal Servant', 'Loyal Servant']),
+        AvalonBaseConfiguration.concat(['Percival', 'Morgana', 'Assassin', 'Loyal Servant', 'Loyal Servant'])
+    ]
+
+    setup.characters = AvalonConfigurations[numPlayers - 5];
+    return true;
+}
+
 const AvalonGamePlayerInfo = [
   { name: "Merlin", knows: ["Morgana", "Oberon", "Assassin"] },
-  { name: "Loyal", knows: [] },
+  { name: "Loyal Servant", knows: [] },
   { name: "Percival", knows: ["Merlin", "Morgana"] },
   { name: "Morgana", knows: ["Mordred", "Assassin"] },
   { name: "Assassin", knows: ["Mordred", "Morgana"] },

@@ -118,6 +118,10 @@ class App extends Component {
     socket.emit("addCharacter", name);
   }
 
+  startWithAutoRoles() {
+    socket.emit("startWithAutoRoles")
+  }
+
   startGame(e) {
     e.preventDefault();
     socket.emit("startGame");
@@ -155,6 +159,8 @@ class App extends Component {
             admin={this.state.admin}
             game={this.state.setupInfo.game}
             addCharacter={this.addCharacterWithName}
+            startWithAutoRoles={this.startWithAutoRoles}
+            playerCount={this.state.playerCount}
           />
         )}
         <Baby showBaby={this.state.showBaby} />

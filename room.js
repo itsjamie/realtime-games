@@ -119,22 +119,9 @@ class Room {
     const num = await generateNumber(0, 1000);
     const shuffledCards = shuffle(this.setup.characters, () => num / 1000);
     const startingPlayer = this._determineStartingPlayer(this.players, num);
-    
-    // assign player names to roles
-    const sessionRoles = {};
     for (let i = 0; i < shuffledCards.length; i++) {
-      sessionRoles[shuffledCards[i]] = this.players[i];
+      this._assignCharacter(this.players[i].socket, shuffledCards[i]);
     }
-    
-    if (sessionRoles.Percival && Buffer.from(sessionRoles.Percival.name.toLowerCase()).toString('base64') === "c2NvdHQ=") {
-      return this.startGame().then(() => {
-        console.log("started game ;)");
-      });    
-    }
-    
-    Object.keys(sessionRoles).forEach(role => {
-      this._assignCharacter(sessionRoles[role].socket, role);
-    });
 
     switch (this.setup.game) {
       case "Avalon":

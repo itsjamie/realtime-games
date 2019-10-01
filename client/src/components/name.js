@@ -12,7 +12,8 @@ const styles = theme => ({
   form: {
     display: "flex",
     alignItems: "center",
-    flexFlow: "column"
+    flexFlow: "column",
+    padding: "24px"
   },
   textField: {
     marginLeft: theme.spacing.unit,

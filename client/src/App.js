@@ -16,6 +16,7 @@ class App extends Component {
     this.state = {
       name: window.localStorage.getItem("name") || "",
       room: "",
+      roomsList: [],
       game: "freeform",
       admin: false,
       connected: false,
@@ -41,6 +42,11 @@ class App extends Component {
     socket.on("disconnect", () => {
       this.setState({
         connected: false
+      });
+    });
+    socket.on("roomsList:get", roomsList => {
+      this.setState({
+        roomsList: roomsList
       });
     });
     socket.on("admin", () => {

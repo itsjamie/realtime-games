@@ -38,14 +38,29 @@ const styles = theme => ({
     padding: "24px"
   },
   button: {
-    marginTop: "15px",
+    margin: "15px 0",
     width: "70%"
-  }
+  },
+  roomListButton: {
+    display: "block",
+    margin: "0 auto 10px auto",
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    border: 0,
+    borderRadius: 3,
+    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+    color: 'white',
+    height: 48,
+    padding: '0 30px',
+  },
 });
 
 const Controls = props => {
-  const { classes } = props;
+  const { classes, roomsList } = props;
   const [room, setRoom] = useState(null);
+
+  const rooms = roomsList.map(roomName =>
+    <Button className={classes.roomListButton} onClick={() => props.joinRoom(roomName)}>{roomName}</Button>
+  );
 
   if (!props.room) {
     return (
@@ -66,6 +81,8 @@ const Controls = props => {
         >
           Join Room
         </Button>
+
+        {rooms}
       </form>
     );
   }

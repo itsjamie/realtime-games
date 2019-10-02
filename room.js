@@ -12,14 +12,16 @@ class RoomManager {
   }
 
   onConnect(socket) {
+    socket.emit("roomsList:get", Object.keys(this.rooms));
+
     socket.on("room", roomName => {
       this.joinRoom(socket, roomName);
-      const state = SocketState.get(socket.id);
 
       socket.on("disconnect", () => {
         this.rooms[roomName].removePlayer(socket);
         if (this.rooms[roomName].players.length === 0) {
           delete this.rooms[roomName];
+          this.io.emit("roomsList:get", Object.keys(this.rooms));
         }
       });
     });
@@ -27,6 +29,7 @@ class RoomManager {
 
   createRoom(roomName) {
     this.rooms[roomName] = new Room(roomName, this.io);
+    this.io.emit("roomsList:get", Object.keys(this.rooms));
   }
 
   joinRoom(socket, roomName) {

@@ -5,6 +5,7 @@ import classNames from "classnames";
 import Input from "@material-ui/core/Input";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import GenerateRoom from "./generate-room";
 
 const styles = theme => ({
   container: {
@@ -65,6 +66,8 @@ const Controls = props => {
   if (!props.room) {
     return (
       <form className={classes.joinRoom} onSubmit={() => false}>
+        <GenerateRoom {...props} />
+
         <TextField
           id="standard-dense"
           placeholder="Enter room name:"

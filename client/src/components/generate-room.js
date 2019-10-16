@@ -614,7 +614,7 @@ const surnames = [
 // getRandomName generates a random name from the list of adjectives and surnames in this file
 // formatted as "adjective_surname". For example focused_turing'.
 const getRandomName = () => {
-  const name = `${adjectives[Math.floor(Math.random() * adjectives.length) + 1]}_${surnames[Math.floor(Math.random() * surnames.length) + 1]}`;
+  const name = `${adjectives[Math.floor(Math.random() * adjectives.length)]}_${surnames[Math.floor(Math.random() * surnames.length)]}`;
 
   if (name === "boring_wozniak") { // Steve Wozniak is not boring
     return getRandomName();
